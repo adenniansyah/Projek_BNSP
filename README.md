@@ -22,6 +22,59 @@ Aplikasi toko buku online berbasis web yang dibuat dengan **Laravel** sebagai pr
 - Kelola pesanan masuk: lihat status pembayaran (**Lunas / Belum Bayar / Gagal**), filter pesanan, dan ubah status pesanan (Pending, Diproses, Dikirim, Selesai, Dibatalkan)
 - Status **Lunas** otomatis terisi saat pembayaran Midtrans berhasil (lewat webhook)
 
+## 🔄 Alur Aplikasi
+
+### Alur Pengguna
+
+```mermaid
+flowchart TD
+    A([Buka Website]) --> B{Sudah punya akun?}
+    B -- Belum --> C[Registrasi]
+    B -- Sudah --> D[Login]
+    C --> D
+    D --> E[Jelajahi Koleksi Buku]
+    E --> F[Lihat Detail Buku]
+    F --> G[Tambah ke Keranjang]
+    G --> H[Checkout + Alamat Pengiriman]
+    H --> I{Metode Pembayaran}
+    I -- COD --> J[Pesanan Dibuat<br/>Status: Belum Bayar]
+    I -- Midtrans --> K[Bayar via Midtrans Snap]
+    K --> L[Midtrans Kirim Notifikasi<br/>ke Webhook]
+    L --> M[Status: Lunas]
+    J --> N([Pesanan Diproses Admin])
+    M --> N
+```
+
+### Alur Admin
+
+```mermaid
+flowchart TD
+    A([Login Admin]) --> B[Dashboard]
+    B --> C[Kelola Buku]
+    B --> D[Kelola Kategori]
+    B --> E[Kelola Pesan]
+    B --> F[Kelola Pesanan]
+    F --> F1[Filter Pesanan]
+    F1 --> F2[Lihat Detail Pesanan]
+    F2 --> F3[Ubah Status Pesanan<br/>Pending → Diproses → Dikirim → Selesai]
+```
+
+### Alur Pembayaran Midtrans
+
+```mermaid
+sequenceDiagram
+    participant U as Pengguna
+    participant A as Aplikasi Laravel
+    participant M as Midtrans Snap
+    U->>A: Klik Checkout (Midtrans)
+    A->>M: Minta Snap Token
+    M-->>A: Snap Token
+    A-->>U: Tampilkan popup pembayaran
+    U->>M: Bayar
+    M->>A: Notifikasi ke /api/midtrans/notification
+    A->>A: Update status pesanan → Lunas
+```
+
 ## 🛠️ Teknologi
 
 | Bagian | Teknologi |
@@ -109,5 +162,5 @@ database/migrations    → struktur tabel
 
 ## 👤 Pembuat
 
-**Arjuanda Denniansyah** — Mahasiswa Teknik Informatika, Universitas Muhammadiyah Jakarta
+**Arjuanda Denniansyah**: Mahasiswa Teknik Informatika, Universitas Muhammadiyah Jakarta
 GitHub: [@adenniansyah](https://github.com/adenniansyah)

@@ -40,7 +40,7 @@ class Book extends Model
     }
 
     // Method untuk mendapatkan URL fallback (placeholder)
-    // INI METHOD YANG HILANG/TIDAK TERBACA SEBELUMNYA
+    
     public function getFallbackUrl() {
         $colors = ['2E86AB', 'C1121F', 'FFB703', '06D6A0', '9D4EDD', 'EF233C'];
         $colorIndex = crc32($this->title) % count($colors);
